@@ -198,3 +198,36 @@ class DataZoom(Base):
         if self._kwargs:
             json.update(self._kwargs)
         return json
+
+
+class Grid(Base):
+    """Grid data structure."""
+
+    def __init__(self, **kwargs):
+        self._kwargs = kwargs
+
+    @property
+    def json(self):
+        """JSON format data."""
+        json = dict()
+        if self._kwargs:
+            json.update(self._kwargs)
+        return json
+
+
+class AxisPointer(Base):
+    """ data zoom for echarts"""
+
+    def __init__(self,  link,  **kwargs):
+        self.link = link
+        self._kwargs = kwargs
+
+    @property
+    def json(self):
+        """JSON format data"""
+        json = {
+            "link": self.link,
+        }
+        if self._kwargs:
+            json.update(self._kwargs)
+        return json

@@ -15,12 +15,12 @@ import json
 import logging
 import tempfile
 import webbrowser
-from .option import Base
+from .option import Base, Grid, AxisPointer
 from .option import Axis, Legend, Series, Tooltip, Toolbox, VisualMap,DataZoom
 from .datastructure import *
 
 __version__ = '0.1'
-__release__ = '0.1.3'
+__release__ = '0.1.4'
 __author__ = 'Hsiaoming Yang <me@lepture.com>'
 
 
@@ -37,6 +37,8 @@ class Echart(Base):
             self.y_axis = []
 
         self.series = []
+        self.grid = []
+        self.dataZoom = []
         self.kwargs = kwargs
 
         self.logger = logging.getLogger(__name__)
@@ -60,7 +62,11 @@ class Echart(Base):
         elif isinstance(obj, VisualMap):
             self.visualMap = obj
         elif isinstance(obj, DataZoom):
-            self.dataZoom = obj
+            self.dataZoom.append(obj)
+        elif isinstance(obj, Grid):
+            self.grid.append(obj)
+        elif isinstance(obj, AxisPointer):
+            self.axisPointer = obj
 
         return self
 
@@ -89,7 +95,11 @@ class Echart(Base):
         if hasattr(self, 'visualMap'):
             json['visualMap'] = self.visualMap.json
         if hasattr(self, 'dataZoom'):
-            json['dataZoom'] = self.dataZoom.json
+            json['dataZoom'] = list(map(dict, self.dataZoom)) or [{}]
+        if hasattr(self, 'grid'):
+            json['grid'] = list(map(dict, self.grid)) or [{}]
+        if hasattr(self, 'axisPointer'):
+            json['axisPointer'] = self.axisPointer.json
 
         json.update(self.kwargs)
         return json
