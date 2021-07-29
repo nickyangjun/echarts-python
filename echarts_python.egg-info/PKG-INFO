@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: echarts-python
-Version: 0.1.4
+Version: 0.1.5
 Summary: Echarts binding for Python
 Home-page: https://github.com/yufeiminds/echarts-python
 Author: Hsiaoming Yang

@@ -16,11 +16,11 @@ import logging
 import tempfile
 import webbrowser
 from .option import Base, Grid, AxisPointer
-from .option import Axis, Legend, Series, Tooltip, Toolbox, VisualMap,DataZoom
+from .option import Axis, Legend, Series, Tooltip, Toolbox, VisualMap, DataZoom
 from .datastructure import *
 
 __version__ = '0.1'
-__release__ = '0.1.4'
+__release__ = '0.1.5'
 __author__ = 'Hsiaoming Yang <me@lepture.com>'
 
 
@@ -39,6 +39,7 @@ class Echart(Base):
         self.series = []
         self.grid = []
         self.dataZoom = []
+        self.visualMap = []
         self.kwargs = kwargs
 
         self.logger = logging.getLogger(__name__)
@@ -60,7 +61,7 @@ class Echart(Base):
         elif isinstance(obj, Toolbox):
             self.toolbox = obj
         elif isinstance(obj, VisualMap):
-            self.visualMap = obj
+            self.visualMap.append(obj)
         elif isinstance(obj, DataZoom):
             self.dataZoom.append(obj)
         elif isinstance(obj, Grid):
@@ -93,7 +94,7 @@ class Echart(Base):
         if hasattr(self, 'toolbox'):
             json['toolbox'] = self.toolbox.json
         if hasattr(self, 'visualMap'):
-            json['visualMap'] = self.visualMap.json
+            json['visualMap'] = list(map(dict, self.visualMap)) or [{}]
         if hasattr(self, 'dataZoom'):
             json['dataZoom'] = list(map(dict, self.dataZoom)) or [{}]
         if hasattr(self, 'grid'):
@@ -120,7 +121,7 @@ class Echart(Base):
             fobj.flush()
             webbrowser.open('file://' + os.path.realpath(fobj.name))
             persist or raw_input('Press enter for continue')
-                
+
     def save(self, path, name):
         """
         Save html file into project dir
@@ -129,5 +130,5 @@ class Echart(Base):
         """
         if not os.path.exists(path):
             os.makedirs(path)
-        with open(path+str(name)+".html", "w") as html_file:
+        with open(path + str(name) + ".html", "w") as html_file:
             html_file.write(self._html())
